@@ -4,6 +4,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   ScrollView,
+  Text,
 } from "react-native";
 
 import React, { useState } from "react";
@@ -20,8 +21,28 @@ const SignInScreen = () => {
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
 
-  const onSignInPressed = () => {
-    navigation.navigate("Home");
+  const [emailError, setemailError] = useState("");
+
+  const onSignInPressed = async () => {
+    /* navigation.navigate("Home"); */
+
+    if (email != "" && password != "") {
+      alert(password);
+      setemailError("");
+      /* await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }).then().catch(err => {console.log(errr)})
+    
+           */
+    } 
   };
 
   const onForgotPasswordPressed = () => {
@@ -47,7 +68,7 @@ const SignInScreen = () => {
           secureTextEntry={true}
         />
         <CustomButton text="Iniciar Sesión" onPress={onSignInPressed} />
-
+        <Text style={{ color: "red" }}>{emailError}</Text>
         <CustomButton
           text="¿Olvidaste tu contraseña?"
           onPress={onForgotPasswordPressed}

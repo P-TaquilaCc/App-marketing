@@ -16,7 +16,8 @@ const SignUpScreen = () => {
   const navigation = useNavigation();
 
   const onRegisterPressed = () => {
-    console.warn("Crear cuenta");
+    /* console.warn("Crear cuenta"); */
+    alert("Hola");
   };
 
   const onTermsOfUsePressed = () => {
