@@ -6,8 +6,11 @@ import CustomButton from "../components/CustomButton";
 
 import { useNavigation } from "@react-navigation/native";
 
+import axios from '../api/server';
+
 const SignUpScreen = () => {
   const [dni, setDni] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,9 +18,45 @@ const SignUpScreen = () => {
 
   const navigation = useNavigation();
 
+  const [dniError, setdniError] = useState("");
+  const [telefonoError, settelefonoError] = useState("");
+  const [nameError, setnameError] = useState("");
+  const [emailError, setemailError] = useState("");
+  const [passwordError, setpasswordError] = useState("");
+  const [repeitpasswordError, setrepeatpasswordError] = useState("");
+
+
   const onRegisterPressed = () => {
     /* console.warn("Crear cuenta"); */
-    alert("Hola");
+
+    axios.post('/api/register', {
+      dni: dni,
+      telefono: telefono,
+      name: name,
+      email: email,
+      password: password
+    })
+    .then(function (response) {
+      console.log(response.data)
+      setdniError(response.data.dni);
+      settelefonoError(response.data.telefono);
+      setnameError(response.data.name);
+      setemailError(response.data.email);
+      setpasswordError(response.data.password);
+
+      if (response.data.message == "Registro con éxito!!") {
+        alert(response.data.message);
+        setDni("");
+        setTelefono("");
+        setName("");
+        setEmail("");
+        setPassword("");
+      }
+
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   };
 
   const onTermsOfUsePressed = () => {
@@ -38,24 +77,37 @@ const SignUpScreen = () => {
         <Text style={style.title}>Crear Cuenta</Text>
 
         <CustomInput placeholder="DNI" value={dni} setValue={setDni} />
+        <Text style={{ color: "red" }}>{dniError}</Text>
+
+        <CustomInput placeholder="Celular" value={telefono} setValue={setTelefono} />
+        <Text style={{ color: "red" }}>{telefonoError}</Text>
+
         <CustomInput
           placeholder="Nombres y Apellidos"
           value={name}
           setValue={setName}
         />
+        <Text style={{ color: "red" }}>{nameError}</Text>
+
         <CustomInput placeholder="Correo" value={email} setValue={setEmail} />
+        <Text style={{ color: "red" }}>{emailError}</Text>
+
         <CustomInput
           placeholder="Contraseña"
           value={password}
           setValue={setPassword}
           secureTextEntry={true}
         />
+        <Text style={{ color: "red" }}>{passwordError}</Text>
+
         <CustomInput
           placeholder="Repetir Contraseña"
           value={passwordRepeat}
           setValue={setPasswordRepeat}
           secureTextEntry={true}
         />
+        {/* <Text style={{ color: "red" }}>{repeitpasswordError}</Text> */}
+
         <CustomButton text="Crear Cuenta" onPress={onRegisterPressed} />
 
         <Text style={style.text}>

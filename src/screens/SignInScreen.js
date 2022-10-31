@@ -24,14 +24,14 @@ const SignInScreen = () => {
   const navigation = useNavigation();
 
   const [emailError, setemailError] = useState("");
+  const [passwordError, setpasswordError] = useState("");
+  const [loginError, setloginError] = useState("");
 
   const onSignInPressed = () => {
     
-    /* navigation.navigate("Home"); */
-
     if (email != "" && password != "") {
 
-      axios.get('/api/negocios', {
+      /* axios.get('/api/negocios', {
         headers: {
           'Authorization': 'Bearer 46|m6BLxcbmUqvtfhqxWwJXzSwFht5kLFnhH5fqaFwi'
         }
@@ -41,21 +41,41 @@ const SignInScreen = () => {
       })
       .catch(function (error) {
         console.log(error);
-      });
+      }); */
 
-      /* axios.post('/api/login', {
+      axios.post('/api/login', {
         email: email,
         password: password
       })
       .then(function (response) {
-        console.log('response', response.data)
+        console.log(response.data.message)
+        if (response.data.message === "Success") {
+          navigation.navigate("Home");
+          setloginError("");
+        } else {
+          setloginError(response.data.message);
+        }
       })
       .catch(function (error) {
         console.log(error);
-      }); */
-      alert(password);
+      });
+
+      //alert(password);
       setemailError("");
-    } 
+      setpasswordError("");
+    } else if (email == "" && password != "") {
+      setpasswordError("");
+      setloginError("");
+      setemailError("Ingrese un email");
+    } else if (password == "" && email != "") {
+      setemailError("");
+      setloginError("");
+      setpasswordError("Ingrese un password");
+    } else {
+      setloginError("");
+      setemailError("Ingrese un email");
+      setpasswordError("Ingrese un password");
+    }
   };
 
   const onForgotPasswordPressed = () => {
@@ -74,14 +94,16 @@ const SignInScreen = () => {
           resizeMode="contain"
         />
         <CustomInput placeholder="Correo" value={email} setValue={setEmail} />
+        <Text style={{ color: "red" }}>{emailError}</Text>
         <CustomInput
           placeholder="Contraseña"
           value={password}
           setValue={setPassword}
           secureTextEntry={true}
         />
+        <Text style={{ color: "red" }}>{passwordError}</Text>
         <CustomButton text="Iniciar Sesión" onPress={onSignInPressed} />
-        <Text style={{ color: "red" }}>{emailError}</Text>
+        <Text style={{ color: "red" }}>{loginError}</Text>
         <CustomButton
           text="¿Olvidaste tu contraseña?"
           onPress={onForgotPasswordPressed}
