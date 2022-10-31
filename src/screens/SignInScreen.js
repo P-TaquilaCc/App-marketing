@@ -14,6 +14,8 @@ import CustomButton from "../components/CustomButton";
 
 import { useNavigation } from "@react-navigation/native";
 
+import axios from '../api/server';
+
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,25 +25,36 @@ const SignInScreen = () => {
 
   const [emailError, setemailError] = useState("");
 
-  const onSignInPressed = async () => {
+  const onSignInPressed = () => {
+    
     /* navigation.navigate("Home"); */
 
     if (email != "" && password != "") {
+
+      axios.get('/api/negocios', {
+        headers: {
+          'Authorization': 'Bearer 46|m6BLxcbmUqvtfhqxWwJXzSwFht5kLFnhH5fqaFwi'
+        }
+      })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      /* axios.post('/api/login', {
+        email: email,
+        password: password
+      })
+      .then(function (response) {
+        console.log('response', response.data)
+      })
+      .catch(function (error) {
+        console.log(error);
+      }); */
       alert(password);
       setemailError("");
-      /* await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      }).then().catch(err => {console.log(errr)})
-    
-           */
     } 
   };
 
