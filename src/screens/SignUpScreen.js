@@ -14,7 +14,7 @@ const SignUpScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [passwordRepeat, setPasswordRepeat] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
 
   const navigation = useNavigation();
 
@@ -23,7 +23,7 @@ const SignUpScreen = () => {
   const [nameError, setnameError] = useState("");
   const [emailError, setemailError] = useState("");
   const [passwordError, setpasswordError] = useState("");
-  const [repeitpasswordError, setrepeatpasswordError] = useState("");
+  const [confirmationpasswordError, setconfirmationpasswordError] = useState("");
 
 
   const onRegisterPressed = () => {
@@ -34,15 +34,16 @@ const SignUpScreen = () => {
       telefono: telefono,
       name: name,
       email: email,
-      password: password
+      password: password,
+      password_confirmation: passwordConfirmation
     })
     .then(function (response) {
-      console.log(response.data)
       setdniError(response.data.dni);
       settelefonoError(response.data.telefono);
       setnameError(response.data.name);
       setemailError(response.data.email);
       setpasswordError(response.data.password);
+      setconfirmationpasswordError(response.data.password);
 
       if (response.data.message == "Registro con éxito!!") {
         alert(response.data.message);
@@ -51,6 +52,7 @@ const SignUpScreen = () => {
         setName("");
         setEmail("");
         setPassword("");
+        setPasswordConfirmation("");
       }
 
     })
@@ -102,11 +104,11 @@ const SignUpScreen = () => {
 
         <CustomInput
           placeholder="Repetir Contraseña"
-          value={passwordRepeat}
-          setValue={setPasswordRepeat}
+          value={passwordConfirmation}
+          setValue={setPasswordConfirmation}
           secureTextEntry={true}
         />
-        {/* <Text style={{ color: "red" }}>{repeitpasswordError}</Text> */}
+        <Text style={{ color: "red" }}>{confirmationpasswordError}</Text>
 
         <CustomButton text="Crear Cuenta" onPress={onRegisterPressed} />
 

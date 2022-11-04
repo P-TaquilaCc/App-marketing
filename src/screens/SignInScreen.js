@@ -31,25 +31,12 @@ const SignInScreen = () => {
     
     if (email != "" && password != "") {
 
-      /* axios.get('/api/negocios', {
-        headers: {
-          'Authorization': 'Bearer 46|m6BLxcbmUqvtfhqxWwJXzSwFht5kLFnhH5fqaFwi'
-        }
-      })
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      }); */
-
       axios.post('/api/login', {
         email: email,
         password: password
       })
       .then(function (response) {
-        console.log(response.data.message)
-        if (response.data.message === "Success") {
+        if (response.status == 200) {
           navigation.navigate("Home");
           setloginError("");
         } else {
