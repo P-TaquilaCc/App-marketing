@@ -1,91 +1,66 @@
-import { Dimensions, View, Text, StyleSheet, SafeAreaView, Image, ScrollView, TextInput, TouchableOpacity, FlatList } from 'react-native'
-import React from "react";
+import { Dimensions, View, Text, StyleSheet, SafeAreaView, Image, ScrollView, TextInput, TouchableOpacity, FlatList, Button  } from 'react-native'
 import COLORS from '../assets/colors';
+import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { LogBox } from 'react-native';
-import axios from '../api/server';
+import axios from '../api/server'; 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height } = Dimensions.get('window');
 
-const Card = ({pet, navigation}) => {
+
+const Card = ({product, navigation}) => {
   return <TouchableOpacity activeOpacity={0.8}
-  onPress={() => navigation.navigate('DetailsBusiness', pet)}>
+  onPress={() => navigation.navigate('DetailsBusiness', product)}>
     <View style={style.cardContainer}>
       <View style={style.cardImageContainer}>
-        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/negocio/' + pet?.imagen}} style={{width: '100%', height: '100%'}} />
+        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/productos/' + product?.imagen}} style={{width: '100%', height: '100%'}} />
       </View>
       <View style={style.cardDetailContainer}>
+        <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>
+        {product?.nombre}
+        </Text>
         <View style={{
           flexDirection: 'row',
-        justifyContent: 'space-between'}}>
-          <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>
-          {pet?.nombre}
+        justifyContent: 'space-between', marginTop: 25, alignItems: 'center'}}>
+          <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 15}}>S/  
+          {(product?.precio).toFixed(2)}
           </Text>
+
+          <TouchableOpacity activeOpacity={0.8} style={{ borderRadius: 5, backgroundColor: '#3B71F3', padding: 8 }}
+          onPress={() => alert('Se agregó al carrito de compras!')}>
+            <Text style={{ color: "white" }}>Agregar</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={{ fontSize: 12, marginTop: 5, color: COLORS.dark }}>Horario: {pet?.hora_inicio + " - " + pet?.hora_fin}</Text>
-        <View style={{ marginTop: 5, flexDirection: 'row', alignItems: 'center'}}>
-            <Icon name="map-marker" color={COLORS.primary} size={18} />
-            <Text style={{fontSize: 12, color: COLORS.grey, marginLeft: 5}}>
-              Dirección: { pet?.direccion }
-            </Text>
-          </View>
       </View>
     </View>
   </TouchableOpacity>   
 }
 
 
-const HomeScreen = ({navigation}) => {
-  const [categories, setCategories] = React.useState([]);
-  const [business, setBusiness] = React.useState([]);
-  const [selectedCategoryIndex, setSeletedCategoryIndex] = React.useState(0);
-  const [filteredPets, setFilteredPets] = React.useState([]);
 
-  const prueba = AsyncStorage.getItem('userToken');
-  
-  /*React.useEffect(() => {
-    axios.get('/api/categoriasNegocio', {
-        headers: {
-          'Authorization': 'Bearer 199|CRBBgynR1knYj0f9GwQEcPdPW0meltBKLXzAeKFU'
-        }
-      })
-      .then((response) => {      
-      setCategories(response.data);
-    });
-  }, []); */
-  
+const DetailsBusinessScreen = ({ navigation, route }) => {
+
+  const [categories, setCategories] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
+  const [selectedCategoryIndex, setSeletedCategoryIndex] = React.useState(0);
+  const [filteredProducts, setFilteredProducts] = React.useState([]);
+
+  const idBusiness = route.params;
+
   React.useEffect(() => {
     
     handleGetToken();
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
-    /* axios.get('/api/categoriasNegocio', {
-      headers: {
-        'Authorization': 'Bearer 406|F43hUItWC5OgbjibaC4gLYdAvmRf6Ejxe1JRZMJZ',
-      }
-    })
-    .then((response) => {
-      setCategories(response.data);
-    });
-
-    axios.get('/api/negocios', {
-      headers: {
-        'Authorization': 'Bearer 406|F43hUItWC5OgbjibaC4gLYdAvmRf6Ejxe1JRZMJZ',
-      }
-    })
-      .then((response) => {
-        setBusiness(response.data);
-      });
-     */
-    fliterPet(0)
+    fliterProducts(0)
 
   }, []);
 
 
-  const handleGetToken = async () => {
+  const handleGetToken = async () => { 
     const dataToken = await AsyncStorage.getItem('userToken');
-    axios.get('/api/categoriasNegocio', {
+
+    axios.get('/api/categoriaProductos/'+ idBusiness.id, {
       headers: {
         'Authorization': 'Bearer ' + dataToken,
       }
@@ -94,43 +69,41 @@ const HomeScreen = ({navigation}) => {
       setCategories(response.data);
     });
 
-    axios.get('/api/negocios', {
+    axios.get('/api/productos/'+idBusiness.id, {
       headers: {
         'Authorization': 'Bearer ' + dataToken,
       }
     })
-    .then((response) => {
-      setBusiness(response.data);
-    });
-
-  }
-
-  const fliterPet = index => {
-      const currentPets = business.filter((item) => item?.idCategoria == categories[index].id);
-      setFilteredPets(currentPets);
-  }
-
-
-
-  return (
+      .then((response) => {
+        setProducts(response.data);
+      });
     
-    <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
+    console.log("Hola")
+
+  }
+
+  const fliterProducts = index => {
+    const currentProducts = products.filter((item) => item?.idCategoria == categories[index].id);
+    setFilteredProducts(currentProducts);
+  }
+
+
+  console.log(products)
+  
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
       <View style={style.header}>
-        <View>
-          <Text style={style.user}>Hola, Percy Taquila</Text>
-          <Text style={style.message}>¡Bienvenido! a nuestro Marketplace</Text>
-        </View>
-        <Image source={ require('../assets/img/perfil.jpg')}
-        style={ style.imgUser } />
+
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.mainContainer}>
           {/* Buscador */}
           <View style={style.searchInputContainer}>
             <Icon name="magnify" size={24} color={COLORS.grey} />
-            <TextInput placeholder="Ingrese un negocio que desee buscar" style={{flex: 1, paddingLeft: 5}} placeholderTextColor={COLORS.grey} />
+            <TextInput placeholder="Ingrese un producto que desee buscar" style={{flex: 1, paddingLeft: 5}} placeholderTextColor={COLORS.grey} />
           </View>
-         {/* Render de las categorías de los negocio */}
+
+           {/* Render de las categorías de los negocio */}
           <View
             style={{
               flexDirection: 'row',
@@ -141,7 +114,7 @@ const HomeScreen = ({navigation}) => {
                 <TouchableOpacity
                   onPress={() => {
                     setSeletedCategoryIndex(index);
-                    fliterPet(index);
+                    fliterProducts(index);
                   }}
                   style={[
                     style.categoryBtn,
@@ -152,29 +125,29 @@ const HomeScreen = ({navigation}) => {
                           : COLORS.white,
                     },
                   ]}>
-                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaNegocio/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
+                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaProducto/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                 </TouchableOpacity>
                 <Text style={style.categoryBtnName}>{item.nombre}</Text>
               </View>
             ))}
           </View>
-
-       {/* Render de Negocios */}
+          {/* Render de Negocios */}
           <View style={{marginTop: 20}}>
             <FlatList
               showsVerticalScrollIndicator={false}
-              data={filteredPets}
+              data={filteredProducts}
               renderItem={({item}) => (
-                <Card pet={item} navigation={navigation} />
+                <Card product={item} navigation={navigation} />
               )}
             />
           </View>
         </View>
       </ScrollView>
+      
     </SafeAreaView>
-   
   );
 };
+
 
 const style = StyleSheet.create({
   cardContainer: {
@@ -188,14 +161,13 @@ const style = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
+
   cardImageContainer: {
     height: 120,
     width: 140,
     backgroundColor: COLORS.background,
-    /* backgroundColor: COLORS.background,
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10, */
   },
+
   cardDetailContainer: {
     height: 120,
     backgroundColor: COLORS.white,
@@ -205,6 +177,7 @@ const style = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
   },
+
   header: {
     padding: 20,
     flexDirection: 'row',
@@ -274,4 +247,5 @@ const style = StyleSheet.create({
   }
 })
 
-export default HomeScreen;
+
+export default DetailsBusinessScreen

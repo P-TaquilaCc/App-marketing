@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Image,
@@ -5,16 +6,17 @@ import {
   useWindowDimensions,
   ScrollView,
   Text,
+  
 } from "react-native";
 
 import React, { useState } from "react";
 import Logo from "../../assets/logo.png";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-
 import { useNavigation } from "@react-navigation/native";
-
 import axios from '../api/server';
+
+
 
 const SignInScreen = () => {
   const [email, setEmail] = useState("");
@@ -37,6 +39,7 @@ const SignInScreen = () => {
       })
       .then(function (response) {
         if (response.status == 200) {
+          AsyncStorage.setItem('userToken', response.data['token']);
           navigation.navigate("Home");
           setloginError("");
         } else {
