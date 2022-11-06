@@ -151,7 +151,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
                           : COLORS.white,
                     },
                   ]}>
-                  <Image source={{ uri: global.url + ':8000/storage/uploads/categoriaProducto/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
+                  <Image source={{ uri: global.url + '/storage/uploads/categoriaProducto/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                 </TouchableOpacity>
                 <Text style={style.categoryBtnName}>{item.nombre}</Text>
               </View>
