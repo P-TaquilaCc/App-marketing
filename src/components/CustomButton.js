@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
 
   container_PRIMARY: {
-    backgroundColor: "#3B71F3",
+    backgroundColor: "#3093FA",
   },
 
   container_TERTIARY: {},

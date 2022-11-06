@@ -41,44 +41,26 @@ const HomeScreen = ({navigation}) => {
   const [business, setBusiness] = React.useState([]);
   const [selectedCategoryIndex, setSeletedCategoryIndex] = React.useState(0);
   const [filteredPets, setFilteredPets] = React.useState([]);
-
-  const prueba = AsyncStorage.getItem('userToken');
-  
-  /*React.useEffect(() => {
-    axios.get('/api/categoriasNegocio', {
-        headers: {
-          'Authorization': 'Bearer 199|CRBBgynR1knYj0f9GwQEcPdPW0meltBKLXzAeKFU'
-        }
-      })
-      .then((response) => {      
-      setCategories(response.data);
-    });
-  }, []); */
   
   React.useEffect(() => {
     
     handleGetToken();
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+    fliterPet(0);
 
-    /* axios.get('/api/categoriasNegocio', {
-      headers: {
-        'Authorization': 'Bearer 406|F43hUItWC5OgbjibaC4gLYdAvmRf6Ejxe1JRZMJZ',
-      }
-    })
-    .then((response) => {
-      setCategories(response.data);
-    });
 
-    axios.get('/api/negocios', {
-      headers: {
-        'Authorization': 'Bearer 406|F43hUItWC5OgbjibaC4gLYdAvmRf6Ejxe1JRZMJZ',
-      }
-    })
-      .then((response) => {
-        setBusiness(response.data);
-      });
-     */
-    fliterPet(0)
+  
+
+  /* AsyncStorage.removeItem('cartItems', (error) => {
+         let value = "Datos borrados con éxito:"
+    if (error) {
+             value = "Error al eliminar datos:"
+    }
+    alert(value + error)
+  }); */
+
+
+
 
   }, []);
 
@@ -103,6 +85,8 @@ const HomeScreen = ({navigation}) => {
       setBusiness(response.data);
     });
 
+    //console.log(categories);
+
   }
 
   const fliterPet = index => {
@@ -117,7 +101,7 @@ const HomeScreen = ({navigation}) => {
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={style.header}>
         <View>
-          <Text style={style.user}>Hola, Percy Taquila</Text>
+          <Text style={style.user}>Percy Taquila</Text>
           <Text style={style.message}>¡Bienvenido! a nuestro Marketplace</Text>
         </View>
         <Image source={ require('../assets/img/perfil.jpg')}
@@ -148,11 +132,11 @@ const HomeScreen = ({navigation}) => {
                     {
                       backgroundColor:
                         selectedCategoryIndex == index
-                          ? "gray"
+                          ? "#3093FA"
                           : COLORS.white,
                     },
                   ]}>
-                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaNegocio/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
+                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaNegocio/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain', }} />
                 </TouchableOpacity>
                 <Text style={style.categoryBtnName}>{item.nombre}</Text>
               </View>
@@ -263,6 +247,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     backgroundColor: COLORS.primary,
+    padding: 3
     
   },
 

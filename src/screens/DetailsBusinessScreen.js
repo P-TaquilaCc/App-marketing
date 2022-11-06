@@ -1,4 +1,4 @@
-import { Dimensions, View, Text, StyleSheet, SafeAreaView, Image, ScrollView, TextInput, TouchableOpacity, FlatList, Button  } from 'react-native'
+import { Dimensions, View, Text, StyleSheet, SafeAreaView, Image, ScrollView, TextInput, TouchableOpacity, FlatList, ToastAndroid, Alert  } from 'react-native'
 import COLORS from '../assets/colors';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,37 +7,6 @@ import axios from '../api/server';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height } = Dimensions.get('window');
-
-
-const Card = ({product, navigation}) => {
-  return <TouchableOpacity activeOpacity={0.8}
-  onPress={() => navigation.navigate('DetailsBusiness', product)}>
-    <View style={style.cardContainer}>
-      <View style={style.cardImageContainer}>
-        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/productos/' + product?.imagen}} style={{width: '100%', height: '100%'}} />
-      </View>
-      <View style={style.cardDetailContainer}>
-        <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>
-        {product?.nombre}
-        </Text>
-        <View style={{
-          flexDirection: 'row',
-        justifyContent: 'space-between', marginTop: 25, alignItems: 'center'}}>
-          <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 15}}>S/  
-          {(product?.precio).toFixed(2)}
-          </Text>
-
-          <TouchableOpacity activeOpacity={0.8} style={{ borderRadius: 5, backgroundColor: '#3B71F3', padding: 8 }}
-          onPress={() => alert('Se agregó al carrito de compras!')}>
-            <Text style={{ color: "white" }}>Agregar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  </TouchableOpacity>   
-}
-
-
 
 const DetailsBusinessScreen = ({ navigation, route }) => {
 
@@ -52,10 +21,12 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
     
     handleGetToken();
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    fliterProducts(0)
+    fliterProducts(0);
+
+
 
   }, []);
-
+  
 
   const handleGetToken = async () => { 
     const dataToken = await AsyncStorage.getItem('userToken');
@@ -74,12 +45,12 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
         'Authorization': 'Bearer ' + dataToken,
       }
     })
-      .then((response) => {
-        setProducts(response.data);
-      });
+    .then((response) => {
+      setProducts(response.data);
+    });
     
-    console.log("Hola")
-
+    //console.log(categories);
+    
   }
 
   const fliterProducts = index => {
@@ -87,8 +58,62 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
     setFilteredProducts(currentProducts);
   }
 
+  const Card = ({product, navigation}) => {
+  return <TouchableOpacity activeOpacity={0.8}
+  onPress={() => navigation.navigate('DetailsBusiness', product)}>
+    <View style={style.cardContainer}>
+      <View style={style.cardImageContainer}>
+        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/productos/' + product?.imagen}} style={{width: '100%', height: '100%'}} />
+      </View>
+      <View style={style.cardDetailContainer}>
+        <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>
+        {product?.nombre}
+        </Text>
+        <View style={{
+          flexDirection: 'row',
+        justifyContent: 'space-between', marginTop: 25, alignItems: 'center'}}>
+          <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 15}}>S/  
+          {(product?.precio).toFixed(2)}
+          </Text>
 
-  console.log(products)
+          <TouchableOpacity activeOpacity={0.8} style={{ borderRadius: 5, backgroundColor: '#3093FA', padding: 8 }}
+            onPress={() => addToCart(product?.id, product?.nombre, product?.precio, product?.imagen)}>
+            <Text style={{ color: "white" }}>Agregar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  </TouchableOpacity>   
+  }
+
+
+  const addToCart = async (id, name, price, img) => {
+    let itemArray = await AsyncStorage.getItem('cartItems');
+    itemArray = JSON.parse(itemArray);
+    //console.log(itemArray);
+    if (itemArray) {
+      let array = itemArray;
+      array.push({"id":id, "name": name, "price": price, "image": img});
+
+      try {
+        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        alert("El Producto fue agregado")
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      let array = [];
+      array.push({"id":id, "name": name, "price": price, "image": img});
+      try {
+        await AsyncStorage.setItem('cartItems', JSON.stringify(array));
+        alert("El Producto fue agregado")
+      }catch (error) {
+        console.log(error)
+      }
+    }
+  }
+  
+  /* console.log(products) */
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.white }}>
@@ -97,6 +122,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={style.mainContainer}>
+
           {/* Buscador */}
           <View style={style.searchInputContainer}>
             <Icon name="magnify" size={24} color={COLORS.grey} />
@@ -110,7 +136,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
               marginTop: 20,
             }}>
             {categories.map((item, index) => (
-              <View key={'business' + index} style={{alignItems: 'center', marginRight: 10}}>
+              <View key={'categories' + index} style={{alignItems: 'center', marginRight: 10}}>
                 <TouchableOpacity
                   onPress={() => {
                     setSeletedCategoryIndex(index);
@@ -121,7 +147,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
                     {
                       backgroundColor:
                         selectedCategoryIndex == index
-                          ? "gray"
+                          ? "#3093FA"
                           : COLORS.white,
                     },
                   ]}>
@@ -131,6 +157,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
               </View>
             ))}
           </View>
+          
           {/* Render de Negocios */}
           <View style={{marginTop: 20}}>
             <FlatList
@@ -236,6 +263,7 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     backgroundColor: COLORS.primary,
+    padding: 3
     
   },
 
