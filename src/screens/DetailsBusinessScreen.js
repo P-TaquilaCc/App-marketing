@@ -63,7 +63,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
   onPress={() => navigation.navigate('DetailsBusiness', product)}>
     <View style={style.cardContainer}>
       <View style={style.cardImageContainer}>
-        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/productos/' + product?.imagen}} style={{width: '100%', height: '100%'}} />
+        <Image source={{uri :  global.url + '/storage/uploads/productos/' + product?.imagen}} style={{width: '100%', height: '100%'}} />
       </View>
       <View style={style.cardDetailContainer}>
         <Text style={{fontWeight: 'bold', color: COLORS.dark, fontSize: 20}}>
@@ -151,7 +151,7 @@ const DetailsBusinessScreen = ({ navigation, route }) => {
                           : COLORS.white,
                     },
                   ]}>
-                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaProducto/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
+                  <Image source={{ uri: global.url + ':8000/storage/uploads/categoriaProducto/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                 </TouchableOpacity>
                 <Text style={style.categoryBtnName}>{item.nombre}</Text>
               </View>

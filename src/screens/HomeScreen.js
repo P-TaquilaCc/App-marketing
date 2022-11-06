@@ -13,7 +13,7 @@ const Card = ({pet, navigation}) => {
   onPress={() => navigation.navigate('DetailsBusiness', pet)}>
     <View style={style.cardContainer}>
       <View style={style.cardImageContainer}>
-        <Image source={{uri : 'http://192.168.1.53:8000/storage/uploads/negocio/' + pet?.imagen}} style={{width: '100%', height: '100%'}} />
+        <Image source={{uri : global.url + '/storage/uploads/negocio/' + pet?.imagen}} style={{width: '100%', height: '100%'}} />
       </View>
       <View style={style.cardDetailContainer}>
         <View style={{
@@ -136,7 +136,7 @@ const HomeScreen = ({navigation}) => {
                           : COLORS.white,
                     },
                   ]}>
-                  <Image source={{ uri: 'http://192.168.1.53:8000/storage/uploads/categoriaNegocio/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain', }} />
+                  <Image source={{ uri: global.url + '/storage/uploads/categoriaNegocio/' + item.imagen }} style={{ width: '100%', height: '100%', resizeMode: 'contain', }} />
                 </TouchableOpacity>
                 <Text style={style.categoryBtnName}>{item.nombre}</Text>
               </View>

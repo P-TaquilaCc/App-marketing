@@ -42,7 +42,7 @@ const CartScreen = ({navigation}) => {
           borderRadius: 10,
           marginRight: 22,
         }}>
-          <Image source={{uri:'http://192.168.1.53:8000/storage/uploads/productos/' + data.image}} style={{width: '100%', height: '100%', resizeMode: 'contain'}}>
+          <Image source={{uri: global.url + '/storage/uploads/productos/' + data.image}} style={{width: '100%', height: '100%', resizeMode: 'contain'}}>
           </Image>
         </View>
         <View style={{
